@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, Pressable, View, Button, FlatList} from 'react-native';
+import { StyleSheet, Text, TextInput, Pressable, View, Button, FlatList } from 'react-native';
 
 let arraySize = 0;
 
@@ -102,7 +102,6 @@ export default function App() {
   );
 }
 
-
 const styles = StyleSheet.create({
   appContainer: {
     flex: 1,
@@ -150,5 +149,4 @@ const styles = StyleSheet.create({
   itemText: {
     color: 'white',
   },
- 
 });
