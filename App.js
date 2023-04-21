@@ -69,8 +69,6 @@ export default function App() {
     }
   };
 
-  useEffect(() => {}, [chosenIndex]);
-
   return (
     <View style={styles.appContainer}>
       <View style={styles.inputContainer}>
