@@ -1,20 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, TextInput, Pressable, View, Button, FlatList } from 'react-native';
 
-let arraySize = 0;
 
+//(1)-> aqui nao precisaria de uma variável global, pode acabar dando conflito futuramente se em algum outro arquivo tu quiser criar um arraySize que precise ser global
 export default function App() {
 
+  const [arraySize, setArraySizes] = useState(0); //(1)-> podemos deixar ele como useState também
   const [chosenIndex, setChosenIndex] = useState(-1);
   const [enteredName, setEnteredName] = useState('');
   const [names, setNames] = useState([]);
 
-  function updateName(enteredNameText){
-    setEnteredName(enteredNameText);
-  };
+  //(2)-> aqui nao precisaria dessa função intermediária, da pra por direto o setEnteredName lá em baixo
+  // function updateName(enteredNameText){
+  //   setEnteredName(enteredNameText);
+  // };
 
   function addName(){
-    arraySize = arraySize + 1;
+    //(1)-> aqui usando já o setArraySizes, ao invés de ter uma variável global
+    setArraySizes(arraySize + 1);
     setNames((names) =>
       [...names, 
         { text: enteredName, key: Math.random().toString() }]);
@@ -22,14 +25,16 @@ export default function App() {
   };
 
   function deleteName(key){
-    arraySize = arraySize - 1;
+    //(1)-> aqui usando já o setArraySizes, ao invés de ter uma variável global
+    setArraySizes(arraySize - 1);
     setNames(names => {
       return names.filter((name) => name.key !== key)
     });
   };
 
   function deleteNames(key){
-    arraySize = 1;
+    //(1)-> aqui usando já o setArraySizes, ao invés de ter uma variável global
+    setArraySizes(1);
     setNames(names => {
       return names.filter((name) => name.key == key)
     });
@@ -41,33 +46,22 @@ export default function App() {
     };
   };
 
+  //(3) -> nesse caso, poderíamos usar um if ternário, diminuindo um monte o tamanho do código e deixando mais fácil a manutenção
   function renderItem(itemData){
-    if(itemData.index == chosenIndex){
-      return(
-        <View style={styles.chosenItemContainer}>
-          <Pressable 
-            onPress={() => deleteName(itemData.item.key)}
-            onLongPress={() => deleteNames(itemData.item.key)}
-            android_ripple={{color: '#210444'}}
-          >
-            <Text style={styles.itemText}> {itemData.item.text} </Text>
-          </Pressable>
-        </View>
-      );
-    }else{
-      return(
-        <View style={styles.itemContainer}>
-          <Pressable 
-            onPress={() => deleteName(itemData.item.key)}
-            onLongPress={() => deleteNames(itemData.item.key)}
-            android_ripple={{color: '#210444'}}
-          >
-            <Text style={styles.itemText}> {itemData.item.text} </Text>
-          </Pressable>
-        </View>
-      );
-    }
-  };
+    return(
+      //(3)-> if ternario aqui, para definir o estilo do item
+      <View style={itemData.index == chosenIndex ? styles.chosenItemContainer : styles.itemContainer}>
+        <Pressable 
+          /*(4)-> gostei do uso dessse pressable. geralmente é usado o touchable opacity, mas pode ser uma alternativa boa dependendo do contexto. mto bala esse onLongPress tbm  */
+          onPress={() => deleteName(itemData.item.key)}
+          onLongPress={() => deleteNames(itemData.item.key)}
+          android_ripple={{color: '#210444'}}
+        >
+          <Text style={styles.itemText}> {itemData.item.text} </Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.appContainer}>
@@ -75,7 +69,7 @@ export default function App() {
         <TextInput
           style={styles.textInput}
           placeholder='Nome'
-          onChangeText={updateName}
+          onChangeText={setEnteredName} //(2)-> colocando direto o setEnteredName
           value={enteredName}
         />
         <Button
@@ -101,6 +95,17 @@ export default function App() {
     </View>
   );
 }
+
+/**
+ * COMENTÁRIOS
+ * Mto bom o app, principalmente a finalidade. Achei mto bala a dinâmica de uso. O estilo sendo feito inteiramente só com o Flex, nao fixan-
+ * do nenhum tamanho também é algo mto bom pra responsividade do aplicativo. Shooow d bola.
+ * 
+ * SUGESTÕES
+ * Da pra criar um popupzinho quando for pra excluir um nome. Só pra testar como que funciona um popup, nao que seja 100% necessário 
+ * Se quiser se aprofundar na questão da UI com o teclado aberto, dá pra usar o KeyboardAvoindingView e fazer algumas coisas legais
+ * https://www.freecodecamp.org/news/how-to-make-your-react-native-app-respond-gracefully-when-the-keyboard-pops-up-7442c1535580/ (principalmente o exemplo de Keyboard Module desse site)
+ */
 
 const styles = StyleSheet.create({
   appContainer: {
