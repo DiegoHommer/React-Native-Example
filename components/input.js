@@ -4,6 +4,7 @@ import { StyleSheet, View, Button, TextInput } from 'react-native';
 function InputName(props){
     const [enteredName, setEnteredName] = useState('');
 
+    // Função que adiciona o nome de entrada no array de nomes contido em App.js
     function addName(){
         props.setNames((names) =>
           [...names, 
@@ -13,16 +14,18 @@ function InputName(props){
 
     return(
         <View style={styles.inputContainer}>
+            {/* Caixa de input de texto que recebe o nome a ser adicionado no array de nomes */}
             <TextInput
-            style={styles.textInput}
-            placeholder='Nome'
-            onChangeText={setEnteredName} 
-            value={enteredName}
+                style={styles.textInput}
+                placeholder='Nome'
+                onChangeText={setEnteredName} 
+                value={enteredName}
             />
+            {/* Botão que quando pressionado adiciona o nome contido na caixa de input ao array de nomes */}
             <Button
-            title='Enter'
-            color= '#7F00FF'
-            onPress={addName}
+                title='Enter'
+                color= '#7F00FF'
+                onPress={addName}
             />
         </View>
     );
