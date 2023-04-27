@@ -5,19 +5,11 @@ import { StyleSheet, Text, TextInput, Pressable, View, Button, FlatList } from '
 //(1)-> aqui nao precisaria de uma variável global, pode acabar dando conflito futuramente se em algum outro arquivo tu quiser criar um arraySize que precise ser global
 export default function App() {
 
-  const [arraySize, setArraySizes] = useState(0); //(1)-> podemos deixar ele como useState também
   const [chosenIndex, setChosenIndex] = useState(-1);
   const [enteredName, setEnteredName] = useState('');
   const [names, setNames] = useState([]);
 
-  //(2)-> aqui nao precisaria dessa função intermediária, da pra por direto o setEnteredName lá em baixo
-  // function updateName(enteredNameText){
-  //   setEnteredName(enteredNameText);
-  // };
-
   function addName(){
-    //(1)-> aqui usando já o setArraySizes, ao invés de ter uma variável global
-    setArraySizes(arraySize + 1);
     setNames((names) =>
       [...names, 
         { text: enteredName, key: Math.random().toString() }]);
@@ -25,24 +17,20 @@ export default function App() {
   };
 
   function deleteName(key){
-    //(1)-> aqui usando já o setArraySizes, ao invés de ter uma variável global
-    setArraySizes(arraySize - 1);
     setNames(names => {
       return names.filter((name) => name.key !== key)
     });
   };
 
   function deleteNames(key){
-    //(1)-> aqui usando já o setArraySizes, ao invés de ter uma variável global
-    setArraySizes(1);
     setNames(names => {
       return names.filter((name) => name.key == key)
     });
   };
 
   function updateChosenIndex(){
-    if(arraySize !== 0){
-      setChosenIndex(Math.floor(Math.random() * arraySize));
+    if(names.length !== 0){
+      setChosenIndex(Math.floor(Math.random() * names.length));
     };
   };
 
