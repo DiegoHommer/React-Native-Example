@@ -1,20 +1,13 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, Pressable, View, Button, FlatList } from 'react-native';
+import { StyleSheet, Text, Pressable, View, Button, FlatList } from 'react-native';
+import InputName from './components/input';
+import RaffleButton from './components/raffleButton';
 
 
-//(1)-> aqui nao precisaria de uma variável global, pode acabar dando conflito futuramente se em algum outro arquivo tu quiser criar um arraySize que precise ser global
 export default function App() {
 
   const [chosenIndex, setChosenIndex] = useState(-1);
-  const [enteredName, setEnteredName] = useState('');
   const [names, setNames] = useState([]);
-
-  function addName(){
-    setNames((names) =>
-      [...names, 
-        { text: enteredName, key: Math.random().toString() }]);
-    setEnteredName('');
-  };
 
   function deleteName(key){
     setNames(names => {
@@ -34,15 +27,15 @@ export default function App() {
     };
   };
 
-  //(3) -> nesse caso, poderíamos usar um if ternário, diminuindo um monte o tamanho do código e deixando mais fácil a manutenção
+  // If ternário diminui o tamanho do código e deixa mais fácil a manutenção
   function renderItem(itemData){
     return(
-      //(3)-> if ternario aqui, para definir o estilo do item
+      // If ternario aqui, para definir o estilo do item
       <View style={itemData.index == chosenIndex ? styles.chosenItemContainer : styles.itemContainer}>
         <Pressable 
-          /*(4)-> gostei do uso dessse pressable. geralmente é usado o touchable opacity, mas pode ser uma alternativa boa dependendo do contexto. mto bala esse onLongPress tbm  */
-          onPress={() => deleteName(itemData.item.key)}
-          onLongPress={() => deleteNames(itemData.item.key)}
+          // Caixa que contém o nome é pressionável...  
+          onPress={() => deleteName(itemData.item.key)}       // Numa pressionada normal, deleta a caixa
+          onLongPress={() => deleteNames(itemData.item.key)}  // Numa pressionada longa, deleta todas as caixas exceto a pressionada
           android_ripple={{color: '#210444'}}
         >
           <Text style={styles.itemText}> {itemData.item.text} </Text>
@@ -53,27 +46,8 @@ export default function App() {
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder='Nome'
-          onChangeText={setEnteredName} //(2)-> colocando direto o setEnteredName
-          value={enteredName}
-        />
-        <Button
-          title='Enter'
-          color= '#7F00FF'
-          onPress={addName}
-        />
-      </View>
-
-      <View style={styles.buttonContainer}>
-      <Button
-          title='Sortear nome'
-          color= '#7F00FF'
-          onPress={updateChosenIndex}
-      />
-      </View>
+      <InputName setNames={setNames} />
+      <RaffleButton updateChosenIndex={updateChosenIndex} />
       <View style={styles.namesContainer}>
         <FlatList
           data={names}
@@ -100,27 +74,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 40,
     paddingHorizontal: 16,
-  },
-  inputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textInput: {
-    borderColor: 'black',
-    borderWidth: 1,
-    paddingVertical: 2,
-    paddingLeft: 5,
-    marginRight: 3,
-    width: '70%',
-  },
-  buttonContainer: {
-    borderBottomWidth: 1,
-    paddingBottom: 10,
-    marginBottom: 5,
   },
   namesContainer: {
     flex: 5,
